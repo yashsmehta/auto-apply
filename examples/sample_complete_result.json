@@ -1,0 +1,91 @@
+{
+  "app_name": "GitHub Copilot Developer Program",
+  "timestamp": "2024-01-15T10:45:30.123Z",
+  "info_url": "https://github.com/features/copilot",
+  "form_url": "https://docs.google.com/forms/copilot-application",
+  "status": "success",
+  "application_info": {
+    "program_name": "GitHub Copilot Developer Program",
+    "description": "Join the GitHub Copilot early access program to shape the future of AI-assisted coding",
+    "eligibility": {
+      "requirements": [
+        "Active GitHub account",
+        "Professional software development experience",
+        "Willing to provide feedback"
+      ],
+      "preferred": [
+        "Experience with multiple programming languages",
+        "Open source contributions",
+        "Technical blog or speaking experience"
+      ]
+    },
+    "benefits": [
+      "Free access to GitHub Copilot",
+      "Direct feedback channel to the product team",
+      "Early access to new features",
+      "Community of innovative developers"
+    ],
+    "commitment": "10-15 hours per month for testing and feedback",
+    "duration": "6 month program with possibility of extension"
+  },
+  "questions": [
+    {
+      "question": "GitHub Username",
+      "type": "text"
+    },
+    {
+      "question": "Primary Programming Language",
+      "type": "select"
+    },
+    {
+      "question": "Years of Professional Experience",
+      "type": "select"
+    },
+    {
+      "question": "Describe your development workflow and how AI tools could enhance it",
+      "type": "textarea"
+    },
+    {
+      "question": "What specific features would you like to see in GitHub Copilot?",
+      "type": "textarea"
+    },
+    {
+      "question": "Link to your most significant open source contribution",
+      "type": "text"
+    },
+    {
+      "question": "How many hours per week can you dedicate to testing?",
+      "type": "select"
+    }
+  ],
+  "answers": [
+    {
+      "question": "GitHub Username",
+      "answer": "johndoe-dev"
+    },
+    {
+      "question": "Primary Programming Language",
+      "answer": "Python"
+    },
+    {
+      "question": "Years of Professional Experience",
+      "answer": "5-7 years"
+    },
+    {
+      "question": "Describe your development workflow and how AI tools could enhance it",
+      "answer": "My development workflow follows a test-driven approach with continuous integration. I typically start by writing tests, then implement features iteratively. AI tools like GitHub Copilot could significantly enhance this workflow by suggesting test cases based on function signatures, generating boilerplate code for common patterns, and helping with API documentation. I'm particularly interested in how AI can assist with refactoring legacy code and suggesting performance optimizations based on best practices."
+    },
+    {
+      "question": "What specific features would you like to see in GitHub Copilot?",
+      "answer": "I would love to see context-aware refactoring suggestions that understand the entire codebase, not just the current file. Additionally, features like automatic test generation based on existing code, security vulnerability detection with fix suggestions, and multi-file coherent code generation would be invaluable. Integration with project-specific coding standards and the ability to learn from team code patterns would also enhance collaboration."
+    },
+    {
+      "question": "Link to your most significant open source contribution",
+      "answer": "https://github.com/popular-project/pull/1234"
+    },
+    {
+      "question": "How many hours per week can you dedicate to testing?",
+      "answer": "3-5 hours"
+    }
+  ]
+}

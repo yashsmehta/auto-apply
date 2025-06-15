@@ -1,0 +1,9 @@
+.venv/
+.env
+uv.lock
+__pycache__/
+*.pyc
+.pytest_cache/
+output/
+*.csv
+.DS_Store

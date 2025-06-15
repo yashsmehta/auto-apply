@@ -1,0 +1,37 @@
+# Sample URLs for Testing Auto-Apply
+
+## Google Forms
+- Basic Form: https://docs.google.com/forms/d/e/1FAIpQLSdI8KwtZ3WD0m1j-Ft5gPe7grl3OkYrIL0qL6oH2ER6iNcD2g/viewform
+- Complex Form: https://docs.google.com/forms/d/e/1FAIpQLScI7Hqh-3Z1234567890abcdef/viewform
+
+## Google Docs (Information Pages)
+- Program Info: https://docs.google.com/document/d/1BW5s8h5TH7MqMqErcU6LqwHZfhLmMSHh/view
+- Fellowship Details: https://docs.google.com/document/d/1234567890abcdef/view
+
+## Typeform
+- Sample Survey: https://form.typeform.com/to/u6nXL7
+- Application Form: https://form.typeform.com/to/abc123
+
+## JotForm
+- Contact Form: https://form.jotform.com/243497149862069
+- Application: https://form.jotform.com/240000000000000
+
+## GitHub Pages
+- GitHub Copilot Info: https://github.com/features/copilot
+- GitHub Education: https://education.github.com/
+- GitHub Sponsors: https://github.com/sponsors
+
+## Educational/Tutorial Sites
+- W3Schools Form Tutorial: https://www.w3schools.com/html/html_forms.asp
+- MDN Web Forms: https://developer.mozilla.org/en-US/docs/Learn/Forms
+
+## Real Program Examples
+- Google Summer of Code: https://summerofcode.withgoogle.com/
+- Y Combinator: https://www.ycombinator.com/apply/
+- TechStars: https://www.techstars.com/apply
+
+## Testing Notes
+- These URLs can be used with both the CLI and Web Interface
+- Some forms may require authentication or have rate limits
+- Results may vary based on the current state of the webpage
+- For testing, combine an info page URL with a form URL

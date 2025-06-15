@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Apply Web Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Auto-Apply</h1>
+            <p>Automated Application Form Processor</p>
+        </header>
+        
+        <main>
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-button active" data-tab="single">Single Application</button>
+                <button class="tab-button" data-tab="csv">Batch Processing (CSV)</button>
+            </div>
+            
+            <!-- Single Application Tab -->
+            <div id="single-tab" class="tab-content active">
+                <form id="single-form">
+                    <div class="url-input-group">
+                        <label for="info-url">Information URL (Company/Program Info)</label>
+                        <div class="input-with-button">
+                            <input type="url" id="info-url" placeholder="https://example.com/about" required>
+                            <button type="button" id="crawl-info-btn" class="btn btn-secondary">
+                                <span class="btn-text">Crawl</span>
+                                <span class="btn-loading" style="display: none;">Loading...</span>
+                            </button>
+                        </div>
+                        <span id="info-url-error" class="error-message"></span>
+                        <span class="help-text">Enter the URL containing information about the company or program</span>
+                    </div>
+                    
+                    <div class="url-input-group">
+                        <label for="form-url">Application Form URL</label>
+                        <div class="input-with-button">
+                            <input type="url" id="form-url" placeholder="https://example.com/apply" required>
+                            <button type="button" id="crawl-form-btn" class="btn btn-secondary">
+                                <span class="btn-text">Crawl</span>
+                                <span class="btn-loading" style="display: none;">Loading...</span>
+                            </button>
+                        </div>
+                        <span id="form-url-error" class="error-message"></span>
+                        <span class="help-text">Enter the URL of the application form</span>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Process Both</span>
+                            <span class="btn-loading" style="display: none;">Processing...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- CSV Upload Tab -->
+            <div id="csv-tab" class="tab-content">
+                <form id="csv-form">
+                    <div class="form-group">
+                        <label for="csv-file">Upload CSV File</label>
+                        <input type="file" id="csv-file" accept=".csv" required>
+                        <span id="csv-error" class="error-message"></span>
+                        <span class="help-text">CSV format: app_name, info_url, form_url, context (optional)</span>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Process CSV</span>
+                            <span class="btn-loading" style="display: none;">Processing...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        
+        <!-- Results Section -->
+        <section id="results-section" style="display: none;">
+            <div class="results-header">
+                <h2>Results</h2>
+                <div class="results-actions">
+                    <button id="copy-all-btn" class="btn btn-secondary">Copy All</button>
+                    <button id="export-json-btn" class="btn btn-secondary">Export JSON</button>
+                    <button id="export-markdown-btn" class="btn btn-secondary">Export Markdown</button>
+                    <button id="clear-results-btn" class="btn btn-secondary">Clear</button>
+                </div>
+            </div>
+            
+            <div id="results-container">
+                <!-- Results will be displayed here -->
+            </div>
+        </section>
+    </div>
+    
+    <!-- Copy Toast -->
+    <div id="copy-toast" class="toast">
+        Copied to clipboard!
+    </div>
+    
+    <!-- Keyboard Shortcuts Help -->
+    <div class="keyboard-help">
+        <h3>Keyboard Shortcuts</h3>
+        <ul>
+            <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> - Submit form</li>
+            <li><kbd>Esc</kbd> - Clear results</li>
+        </ul>
+    </div>
+    
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

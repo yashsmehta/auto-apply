@@ -1,0 +1,28 @@
+{
+  "valid_info_response": {
+    "company_name": "Test Company",
+    "position": "Software Engineer",
+    "requirements": ["Python", "JavaScript", "API Design"],
+    "description": "Build innovative web applications"
+  },
+  "valid_form_response": {
+    "questions": [
+      {"id": "q1", "text": "What is your name?", "type": "text"},
+      {"id": "q2", "text": "Years of experience?", "type": "number"},
+      {"id": "q3", "text": "Why do you want to work here?", "type": "textarea"}
+    ]
+  },
+  "valid_answers_response": {
+    "answers": [
+      {"question_id": "q1", "answer": "John Doe"},
+      {"question_id": "q2", "answer": "5"},
+      {"question_id": "q3", "answer": "I am passionate about building innovative solutions"}
+    ]
+  },
+  "error_responses": {
+    "invalid_url": {"error": "Invalid URL format"},
+    "timeout": {"error": "Request timed out after 60 seconds"},
+    "scraping_failed": {"error": "Failed to scrape content"},
+    "claude_error": {"error": "Claude API error"}
+  }
+}
