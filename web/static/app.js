@@ -103,16 +103,9 @@ function validateUrlInput(input, errorElement) {
         return false;
     }
     
-    // Additional server-side validation
-    validateUrlServer(url).then(result => {
-        if (!result.valid) {
-            errorElement.textContent = result.error;
-            input.classList.add('invalid');
-        } else {
-            errorElement.textContent = '';
-            input.classList.remove('invalid');
-        }
-    });
+    // Server-side validation removed - endpoint doesn't exist
+    errorElement.textContent = '';
+    input.classList.remove('invalid');
     
     return true;
 }

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-print(f"[DEBUG] Loading app.py from: {__file__}")
 """
 Flask web application for Auto-Apply
 Consolidated from run.py, web_app.py, and app.py
@@ -27,11 +26,11 @@ if parent_dir not in sys.path:
 
 try:
     from scraper import WebScraper
-    from claude_sdk import ClaudeMCP
+    from claude import ClaudeMCP
 except ImportError:
     # If we can't import from parent, try from core directory
     from core.scraper import WebScraper
-    from core.claude_sdk import ClaudeMCP
+    from core.claude import ClaudeMCP
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -639,6 +638,6 @@ if __name__ == '__main__':
     app.run(
         host='127.0.0.1',
         port=5001,
-        debug=True,
+        debug=False,  # Disable debug to prevent auto-reloader
         threaded=True
     )

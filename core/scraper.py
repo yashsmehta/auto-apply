@@ -3,6 +3,7 @@ from crawl4ai import AsyncWebCrawler
 from typing import Optional, Dict, Any, Tuple
 import asyncio
 import time
+import threading
 from .utils import validate_url, create_error_response, url_cache
 
 
@@ -32,6 +33,60 @@ class WebScraper:
     
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
+    
+    def _run_async_in_thread(self, coro, timeout=None):
+        """Run an async coroutine in a new thread with its own event loop
+        
+        This method ensures that async code can be safely called from any context,
+        whether or not an event loop is already running.
+        """
+        timeout = timeout or self.timeout
+        result_container = {}
+        exception_container = {}
+        
+        def run_in_new_loop():
+            try:
+                # Create a new event loop for this thread
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    result = loop.run_until_complete(coro)
+                    result_container['result'] = result
+                finally:
+                    # Clean up the event loop
+                    try:
+                        # Cancel any remaining tasks
+                        pending = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                        for task in pending:
+                            task.cancel()
+                        
+                        # Wait for cancellations to complete
+                        if pending:
+                            loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+                    except:
+                        pass  # Ignore errors during cleanup
+                    
+                    loop.close()
+                    asyncio.set_event_loop(None)
+            except Exception as e:
+                exception_container['exception'] = e
+        
+        # Run in a thread
+        thread = threading.Thread(target=run_in_new_loop)
+        thread.start()
+        thread.join(timeout=timeout + 5)  # Give extra time for cleanup
+        
+        if thread.is_alive():
+            # Thread is still running after timeout
+            raise WebScraperError(
+                f"Operation timed out after {timeout} seconds",
+                error_type="timeout_error"
+            )
+        
+        if 'exception' in exception_container:
+            raise exception_container['exception']
+        
+        return result_container.get('result')
     
     def get_stats(self) -> Dict[str, Any]:
         """Get scraping statistics"""
@@ -124,8 +179,15 @@ class WebScraper:
                 }
         
         try:
-            # Run the async scraper
-            html, details = asyncio.run(self._async_scrape(url))
+            # Run the async scraper in a thread-safe way
+            try:
+                # Check if we're already in an event loop
+                loop = asyncio.get_running_loop()
+                # If we are, use the thread-based helper
+                html, details = self._run_async_in_thread(self._async_scrape(url))
+            except RuntimeError:
+                # No running loop, we can use asyncio.run directly
+                html, details = asyncio.run(self._async_scrape(url))
             
             if html:
                 self._stats["successful_requests"] += 1

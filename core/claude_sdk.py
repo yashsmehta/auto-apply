@@ -1,7 +1,8 @@
-"""Claude Code SDK wrapper that mimics the ClaudeMCP interface"""
-import anyio
+"""Claude Code SDK wrapper that handles missing cost_usd field"""
+import asyncio
 import time
 import hashlib
+import re
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 from claude_code_sdk import query
@@ -18,10 +19,11 @@ class ClaudeMCPError(Exception):
 
 
 class ClaudeSDK:
-    """Wrapper for Claude Code SDK that mimics the ClaudeMCP interface
+    """Wrapper for Claude Code SDK that handles missing fields gracefully
     
     This class provides a synchronous interface to the async Claude Code SDK,
-    maintaining compatibility with the existing ClaudeMCP API.
+    maintaining compatibility with the existing ClaudeMCP API and handling
+    cases where cost_usd might be missing.
     """
     
     def __init__(self, work_folder: Optional[str] = None, timeout: int = 60, use_cache: bool = True):
@@ -50,28 +52,63 @@ class ClaudeSDK:
         return f"claude:{hashlib.md5(prompt.encode()).hexdigest()}"
     
     async def _async_call_claude(self, prompt: str) -> str:
-        """Async method to call Claude SDK"""
+        """Async method to call Claude SDK with error handling for missing fields"""
         messages = []
         
         try:
             async for message in query(prompt=prompt):
-                # Handle different message types from SDK
-                if hasattr(message, 'text'):
-                    messages.append(message.text)
-                elif isinstance(message, str):
-                    messages.append(message)
-                elif isinstance(message, dict) and 'text' in message:
-                    messages.append(message['text'])
-                else:
-                    messages.append(str(message))
+                try:
+                    # Handle different message types from SDK
+                    if hasattr(message, 'text'):
+                        messages.append(message.text)
+                    elif isinstance(message, str):
+                        messages.append(message)
+                    elif isinstance(message, dict):
+                        # Handle dict responses
+                        if 'text' in message:
+                            messages.append(message['text'])
+                        elif 'content' in message:
+                            messages.append(str(message['content']))
+                        else:
+                            # Skip messages that might be metadata/cost info
+                            continue
+                    else:
+                        # For other message types, check if they have useful content
+                        if hasattr(message, 'content'):
+                            messages.append(str(message.content))
+                        elif hasattr(message, '__dict__'):
+                            # Check if it's a result message with cost info
+                            msg_dict = message.__dict__
+                            if 'result' in msg_dict and msg_dict['result']:
+                                messages.append(str(msg_dict['result']))
+                            elif any(key in msg_dict for key in ['text', 'content', 'response']):
+                                for key in ['text', 'content', 'response']:
+                                    if key in msg_dict and msg_dict[key]:
+                                        messages.append(str(msg_dict[key]))
+                                        break
+                except (KeyError, AttributeError) as e:
+                    # Skip messages that cause key errors (like missing cost_usd)
+                    continue
+                    
         except Exception as e:
-            # Log error but try to return what we have
+            # Check if we have any messages collected
             if messages:
                 return "".join(messages)
-            raise e
+            # Only raise if we have no messages at all
+            raise ClaudeMCPError(
+                f"Failed to get response from Claude SDK: {str(e)}",
+                error_type="sdk_error",
+                details={"error_type": type(e).__name__, "error_message": str(e)}
+            )
         
         # Combine all messages into a single response
-        return "".join(messages)
+        result = "".join(messages)
+        if not result:
+            raise ClaudeMCPError(
+                "No response received from Claude SDK",
+                error_type="empty_response_error"
+            )
+        return result
     
     def call_claude(self, prompt: str, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Call Claude SDK and return structured response
@@ -115,7 +152,17 @@ class ClaudeSDK:
         
         try:
             # Run the async SDK call in a sync wrapper
-            response = anyio.run(self._async_call_claude, prompt)
+            # Try to get the current event loop
+            try:
+                loop = asyncio.get_running_loop()
+                # If we're in an async context, create a new thread to run the async code
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(asyncio.run, self._async_call_claude(prompt))
+                    response = future.result(timeout=self.timeout)
+            except RuntimeError:
+                # No running loop, we can use asyncio.run directly
+                response = asyncio.run(self._async_call_claude(prompt))
             
             processing_time = time.time() - start_time
             self._stats["total_processing_time"] += processing_time

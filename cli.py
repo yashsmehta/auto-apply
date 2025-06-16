@@ -7,9 +7,9 @@ import sys
 from typing import List, Dict
 
 from core.processor import process_application, save_results
-from core.claude_sdk import ClaudeMCP
+from core.claude import ClaudeMCP
 from core.scraper import WebScraper
-from utils import sanitize_filename
+from core.utils import sanitize_filename
 
 
 def read_csv(file_path: str) -> List[Dict[str, str]]:

@@ -13,7 +13,7 @@ from core import (
     create_error_response,
     validate_url
 )
-from core.claude_sdk import HTMLContentProcessor
+from core.claude import HTMLContentProcessor
 from core.prompts import PromptTemplates
 
 app = Flask(__name__)

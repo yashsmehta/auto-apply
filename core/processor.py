@@ -3,7 +3,7 @@ import json
 import os
 from datetime import datetime
 from typing import Dict, Any, Optional
-from .claude_sdk import ClaudeMCP, ClaudeMCPError
+from .claude import ClaudeMCP, ClaudeMCPError
 from .scraper import WebScraper, WebScraperError
 from .utils import create_response, create_error_response, sanitize_filename, get_progress_message
 
